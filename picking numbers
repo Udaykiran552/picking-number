@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+    /*
+     * The function finds the maximum number of elements such that 
+     * the absolute difference between any two elements is <= 1.
+     */
+    public static int pickingNumbers(List<Integer> a) {
+        // Since the numbers in 'a' are between 0 and 100
+        int[] freq = new int[101];
+
+        // Fill frequency array
+        for (int num : a) {
+            freq[num]++;
+        }
+
+        int maxLength = 0;
+
+        // We only need to check pairs (i, i+1)
+        // This naturally covers single numbers too (e.g., if freq[i+1] is 0)
+        for (int i = 1; i <= 100; i++) {
+            maxLength = Math.max(maxLength, freq[i] + freq[i - 1]);
+        }
+
+        return maxLength;
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        // Handle the potential null pointer for OUTPUT_PATH during local testing
+        String outputPath = System.getenv("OUTPUT_PATH");
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath != null ? outputPath : "output.txt"));
+
+        try {
+            int n = Integer.parseInt(bufferedReader.readLine().trim());
+
+            List<Integer> a = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+                .map(Integer::parseInt)
+                .collect(toList());
+
+            int result = Result.pickingNumbers(a);
+
+            bufferedWriter.write(String.valueOf(result));
+            bufferedWriter.newLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            bufferedReader.close();
+            bufferedWriter.close();
+        }
+    }
+}
